@@ -2,8 +2,6 @@
 
 [![Build][build-badge]][build]
 [![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
 
 Create GFM fixtures.
 
@@ -148,14 +146,6 @@ See [How to Contribute to Open Source][contribute].
 [coverage-badge]: https://img.shields.io/codecov/c/github/wooorm/create-gfm-fixtures.svg
 
 [coverage]: https://codecov.io/github/wooorm/create-gfm-fixtures
-
-[downloads-badge]: https://img.shields.io/npm/dm/create-gfm-fixtures.svg
-
-[downloads]: https://www.npmjs.com/package/create-gfm-fixtures
-
-[size-badge]: https://img.shields.io/bundlephobia/minzip/create-gfm-fixtures.svg
-
-[size]: https://bundlephobia.com/result?p=create-gfm-fixtures
 
 [npm]: https://docs.npmjs.com/cli/install
 
