@@ -73,6 +73,8 @@ export async function createGfmFixtures(url, options = {}) {
       /** @type {'file'|'comment'} */
       const mode = last === 'comment' ? last : 'file'
 
+      // C8 bug on Node 12.
+      /* c8 ignore next 2 */
       return {inputUrl, outputUrl, mode, generate}
     })
   )
@@ -87,6 +89,8 @@ export async function createGfmFixtures(url, options = {}) {
           value = controlPictures(value)
         }
 
+        // C8 bug on Node 12.
+        /* c8 ignore next 2 */
         return {...d, value}
       })
   )
