@@ -6,7 +6,7 @@
  * @property {boolean} [controlPictures=false]
  */
 
-import assert from 'node:assert'
+import assert from 'node:assert/strict'
 import {promises as fs} from 'node:fs'
 import {fileURLToPath, pathToFileURL} from 'node:url'
 import path from 'node:path'
