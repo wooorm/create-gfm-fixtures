@@ -63,6 +63,27 @@ test('create-gfm-fixtures', async () => {
 
   await fs.rmdir(fixtures, {recursive: true})
 
+  // Test: `offline`
+  await fs.mkdir(fixtures, {recursive: true})
+  await fs.writeFile(new URL('check.offline.md', fixtures), 'a')
+
+  await createGfmFixtures(fixtures)
+
+  let exists = false
+
+  try {
+    await fs.access(new URL('check.offline.html', fixtures))
+    exists = true
+  } catch {}
+
+  assert.equal(
+    exists,
+    false,
+    'should not generate fixtures for `offline` files'
+  )
+
+  await fs.rmdir(fixtures, {recursive: true})
+
   // Test: control pictures
   await fs.mkdir(fixtures, {recursive: true})
   await fs.writeFile(new URL('control.md', fixtures), 'a␠␠\nb')

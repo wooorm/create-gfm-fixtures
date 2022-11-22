@@ -1,9 +1,35 @@
 /**
  * @typedef {import('hast').Root} Root
  *
+ * @typedef Keep
+ *   Keep certain parts of GHs pipelines.
+ * @property {boolean} [dir=false]
+ *   Keep `dir="auto"`.
+ * @property {boolean} [heading=false]
+ *   Keep `.anchor` in headings.
+ * @property {boolean} [link=false]
+ *   Keep `rel="nofollow"` on links.
+ * @property {boolean} [camo=false]
+ *   Keep `camo.githubusercontent.com` on images.
+ * @property {boolean} [image=false]
+ *   Keep `max-width:100%` on images and `a[target=_blank]` parent wrapper.
+ * @property {boolean} [mention=false]
+ *   Keep attributes on `.user-mention`s.
+ * @property {boolean} [gemoji=false]
+ *   Keep `g-emoji` custom elements.
+ * @property {boolean} [tasklist=false]
+ *   Keep classes on tasklist-related elements, and `id` on their inputs.
+ * @property {boolean} [frontmatter=false]
+ *   Keep visible frontmatter.
+ *
  * @typedef Options
+ *   Configuration (optional).
  * @property {import('rehype-stringify').Options} [rehypeStringify]
+ *   Configuration passed to `rehype-stringify`.
+ * @property {Keep} [keep={}]
+ *   Keep certain parts of GHs pipelines.
  * @property {boolean} [controlPictures=false]
+ *   Handle control pictures.
  */
 
 import assert from 'node:assert/strict'
@@ -28,26 +54,32 @@ import {visit} from 'unist-util-visit'
 const own = {}.hasOwnProperty
 
 /**
- * @param {import('node:url').URL} url
+ * @param {URL} url
  * @param {Options} [options={}]
  */
+// eslint-disable-next-line complexity
 export async function createGfmFixtures(url, options = {}) {
+  const keep = options.keep || {}
   const rehype = unified().use(rehypeParse).use(rehypeStringify)
 
   const cleanMarkdownBody = unified()
     .use(rehypeParse, {fragment: true})
-    .use(cleanMarkupDir)
-    .use(cleanMarkupAnchor)
-    .use(cleanMarkupLinkRel)
-    .use(cleanMarkupCamoImage)
-    .use(cleanMarkupImageStyle)
-    .use(cleanMarkupImageLink)
-    .use(cleanMarkupUserMention)
-    .use(cleanMarkupGemoji)
-    .use(cleanMarkupFootnoteIdHash)
-    .use(cleanMarkupTasklist)
-    .use(cleanMarkupFrontmatter)
-    .use(rehypeStringify, options.rehypeStringify || {})
+    // `sourcepos` is an extremely buggy GH feature that is dependent on their
+    // markdown parser (`cmark-gfm`-like), whose positional info makes no sense.
+    .use(cleanMarkupSourcepos)
+
+  if (!keep.dir) cleanMarkdownBody.use(cleanMarkupDir)
+  if (!keep.heading) cleanMarkdownBody.use(cleanMarkupAnchor)
+  if (!keep.link) cleanMarkdownBody.use(cleanMarkupLinkRel)
+  if (!keep.camo) cleanMarkdownBody.use(cleanMarkupCamoImage)
+  if (!keep.image) cleanMarkdownBody.use(cleanMarkupImageStyle)
+  if (!keep.image) cleanMarkdownBody.use(cleanMarkupImageLink)
+  if (!keep.mention) cleanMarkdownBody.use(cleanMarkupUserMention)
+  if (!keep.gemoji) cleanMarkdownBody.use(cleanMarkupGemoji)
+  cleanMarkdownBody.use(cleanMarkupFootnoteIdHash)
+  if (!keep.tasklist) cleanMarkdownBody.use(cleanMarkupTasklist)
+  if (!keep.frontmatter) cleanMarkdownBody.use(cleanMarkupFrontmatter)
+  cleanMarkdownBody.use(rehypeStringify, options.rehypeStringify || {})
 
   const cwd = fileURLToPath(url)
   const filePaths = await globby(['**/*.md'], {cwd})
@@ -58,18 +90,18 @@ export async function createGfmFixtures(url, options = {}) {
         path.join(cwd, replaceExt(relative, '.html'))
       )
       let generate = true
+      const parts = path.basename(relative, path.extname(relative)).split('.')
 
-      if (!process.env.UPDATE) {
+      if (parts.includes('offline')) {
+        generate = false
+      } else if (!process.env.UPDATE) {
         try {
           await fs.access(outputUrl)
           generate = false
         } catch {}
       }
 
-      const last = path
-        .basename(relative, path.extname(relative))
-        .split('.')
-        .pop()
+      const last = parts.pop()
       /** @type {'file'|'comment'} */
       const mode = last === 'comment' ? last : 'file'
 
@@ -112,6 +144,8 @@ export async function createGfmFixtures(url, options = {}) {
 
   const octo = new Octokit({auth: 'token ' + ghToken})
 
+  /** @type {Record<string, number>} */
+  const filenameToIndex = {}
   /** @type {Record<string, {content: string}>} */
   const files = {}
   let index = -1
@@ -119,7 +153,9 @@ export async function createGfmFixtures(url, options = {}) {
   while (++index < input.length) {
     const info = input[index]
     if (info.mode === 'file') {
-      files['readme-' + fileInputIndex + '.md'] = {content: info.value}
+      const name = 'readme-' + fileInputIndex + '.md'
+      filenameToIndex[name] = index
+      files[name] = {content: info.value}
       fileInputIndex++
     }
   }
@@ -144,17 +180,20 @@ export async function createGfmFixtures(url, options = {}) {
   for (fileName in outputFiles) {
     if (own.call(outputFiles, fileName)) {
       const info = outputFiles[fileName]
-      assert(info, 'expected `' + fileName + '` to be returned by github')
+      const inputInfo = input[filenameToIndex[fileName]]
+      // Fallback URL for the generated file if there are only comments.
+      const inputUrl = (inputInfo || {}).inputUrl || new URL('about:blank')
+      assert(info, 'expected `' + inputUrl.href + '` to be returned by github')
       assert(
         info.language === 'Markdown',
         'expected github seeing `' +
-          fileName +
+          inputUrl.href +
           '` as plain text data (markdown), instead it saw it as binary data; this is likely because there are weird characters (such as control characters or lone surrogates) in it'
       )
       // Note: not sure if this warning is needed.
       assert(
         !info.truncated,
-        'expected github not truncating `' + fileName + '`'
+        'expected github not truncating `' + inputUrl.href + '`'
       )
     }
   }
@@ -196,15 +235,19 @@ export async function createGfmFixtures(url, options = {}) {
     const name = select('.gist-blob-name', fileNode)
     const body = select('.markdown-body', fileNode)
     assert(name, 'expected github file to have a name')
+    const fileName = toString(name).trim()
+    const match = /^\s*readme-(\d+)\.md\s*$/.exec(fileName)
+    assert(match, 'expected gist file name to match `readme-\\d+.md`')
+    const inputInfo = input[filenameToIndex[fileName]]
+    // Fallback URL for the generated file if there are only comments.
+    const inputUrl = (inputInfo || {}).inputUrl || new URL('about:blank')
+    const fileIndex = Number.parseInt(match[1], 10)
     assert(
       body,
-      'expected github to render body `' +
-        index +
-        '`, it didn’t; this is likely because there are weird characters (such as control characters or lone surrogates) in it'
+      'expected github to render body for ' +
+        inputUrl +
+        ', it didn’t; this is likely because there are weird characters (such as control characters or lone surrogates) in it'
     )
-    const match = /^\s*readme-(\d+)\.md\s*$/.exec(toString(name))
-    assert(match, 'expected gist file name to match `readme-\\d+.md`')
-    const fileIndex = Number.parseInt(match[1], 10)
     fileResults[fileIndex] = rehype.stringify({
       type: 'root',
       children: body.children
@@ -248,6 +291,22 @@ export async function createGfmFixtures(url, options = {}) {
     }
 
     await fs.writeFile(file.outputUrl, clean)
+  }
+}
+
+/** @type {import('unified').Plugin<Array<void>, Root>} */
+function cleanMarkupSourcepos() {
+  return (tree) => {
+    visit(tree, 'element', (element) => {
+      // To do: wait, when was this needed again?
+      /* c8 ignore next 6 */
+      if (
+        element.properties &&
+        typeof element.properties.dataSourcepos === 'string'
+      ) {
+        delete element.properties.dataSourcepos
+      }
+    })
   }
 }
 
@@ -382,6 +441,7 @@ function cleanMarkupImageLink() {
         parent &&
         index !== null &&
         element.children.length === 1
+        // To do: better test that this includes an image?
       ) {
         parent.children[index] = element.children[0]
         delete element.properties.target
@@ -516,7 +576,7 @@ function cleanMarkupFrontmatter() {
     // </table>
     // ```
     if (
-      tree.children.length > 2 &&
+      tree.children.length > 1 &&
       matches('table', head) &&
       select('tbody > tr > td > div', head) &&
       tree.children[1].type === 'text' &&
