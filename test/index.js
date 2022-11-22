@@ -143,7 +143,7 @@ test('create-gfm-fixtures', async (t) => {
 
   t.equal(
     String(await fs.readFile(new URL('footnote.html', fixtures))),
-    '<p><sup><a href="#user-content-fn-a" id="user-content-fnref-a" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup></p>\n<section data-footnotes="" class="footnotes"><h2 id="footnote-label" class="sr-only">Footnotes</h2>\n<ol>\n<li id="user-content-fn-a">\n<p>b <a href="#user-content-fnref-a" data-footnote-backref="" class="data-footnote-backref" aria-label="Back to content">↩</a></p>\n</li>\n</ol>\n</section>\n',
+    '<p><sup><a href="#user-content-fn-a" id="user-content-fnref-a" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup></p>\n<section data-footnotes="" class="footnotes"><h2 id="footnote-label" class="sr-only">Footnotes</h2>\n<ol>\n<li id="user-content-fn-a">\n<p>b <a href="#user-content-fnref-a" data-footnote-backref="" aria-label="Back to content" class="data-footnote-backref">↩</a></p>\n</li>\n</ol>\n</section>\n',
     'should clean footnotes'
   )
 
