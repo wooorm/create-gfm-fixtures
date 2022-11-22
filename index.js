@@ -26,10 +26,10 @@
  *   Configuration (optional).
  * @property {import('rehype-stringify').Options} [rehypeStringify]
  *   Configuration passed to `rehype-stringify`.
- * @property {Keep} [keep={}]
- *   Keep certain parts of GHs pipelines.
  * @property {boolean} [controlPictures=false]
  *   Handle control pictures.
+ * @property {Keep} [keep={}]
+ *   Keep certain parts of GHs pipeline.
  */
 
 import assert from 'node:assert/strict'
@@ -54,8 +54,13 @@ import {visit} from 'unist-util-visit'
 const own = {}.hasOwnProperty
 
 /**
+ * Finds all markdown files inside `url` and generates HTML files for them if
+ * they’re either a) missing, b) `UPDATE` is set in env.
+ *
  * @param {URL} url
+ *   URL to folder containing fixtures
  * @param {Options} [options={}]
+ *   Configuration (optional).
  */
 // eslint-disable-next-line complexity
 export async function createGfmFixtures(url, options = {}) {

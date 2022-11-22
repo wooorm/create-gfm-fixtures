@@ -13,6 +13,8 @@ Create GFM fixtures.
 *   [Use](#use)
 *   [API](#api)
     *   [`createGfmFixtures(url[, options])`](#creategfmfixturesurl-options)
+    *   [`Options`](#options)
+    *   [`Keep`](#keep)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Security](#security)
@@ -55,52 +57,50 @@ This package is [ESM only][esm].
 In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
 
 ```sh
-npm install micromark-extension-gfm-footnote
+npm install create-gfm-fixtures
 ```
 
 ## Use
 
 ```js
-import {promises as fs} from 'node:fs'
-import test from 'tape'
+import assert from 'node:assert/strict'
+import fs from 'node:fs/promises'
+import test from 'node:test'
 import {createGfmFixtures} from 'create-gfm-fixtures'
 
-test('fixtures', async (t) => {
-  const input = await fs.readFile(new URL('url/to/fixtures/example.md'))
+test('fixtures', async () => {
+  const fixtures = new URL('url/to/fixtures/')
+  const input = await fs.readFile(new URL('example.md', fixtures))
+  // ^-- This is our input to some process.
 
-  await createGfmFixtures(new URL('url/to/fixtures/'))
+  await createGfmFixtures(fixtures)
 
   // Now the corresponding HTML is generated.
-  const expected = await fs.readFile(new URL('url/to/fixtures/example.html'))
+  const expected = await fs.readFile(new URL('example.html', fixtures))
 
-  t.equal('<h1>hi</h1>', expected)
+  assert.equal('<h1>hi</h1>', expected)
+  // ^-- Assume this `string` is somehow generated from `input`.
 })
 ```
 
 ## API
 
-This package exports the following identifiers: `createGfmFixtures`.
+This package exports the identifier `createGfmFixtures`.
 There is no default export.
 
 ### `createGfmFixtures(url[, options])`
 
-Finds all markdown files (`**/*.md`) inside `url` (`URL`, not path), and
-generates HTML files for them if they’re either a) missing, b) `UPDATE` is set
-in env.
+Finds all markdown files (`**/*.md`) inside `url` and generates HTML files for
+them if they’re either a) missing, b) `UPDATE` is set in env.
 
-###### `options`
+###### Parameters
 
-Configuration (optional).
+*   `url` (`URL`) — URL to folder containing fixtures
+*   `options` (`Options`) — configuration (optional)
 
-###### `options.rehypeStringify`
+###### Returns
 
-Options passed to [`rehype-stringify`][rehype-stringify] (`Object?`).
-
-###### `options.controlPictures`
-
-Whether to allow [`control-pictures`][control-pictures] in markdown and replace
-them with the control characters they represent before sending it off to GitHub
-(`boolean`, default: `false`).
+Promise that resolves when done (`Promise<void>`).
 
 ###### Configuration from files
 
@@ -108,21 +108,85 @@ End markdown files with `file.md` or `comment.md` to choose whether to crawl as
 markdown files or as comments.
 The default is to use “file”.
 
+Include `offline` in a filename stem part (split on `.`) to never send a
+fixture to GitHub and generate HTML for it.
+
 ###### Configuration from env
 
 *   pass `UPDATE=1` (any truthy value will do) to regenerate fixtures
 *   place a `GH_TOKEN` or `GITHUB_TOKEN` in env when generating files,
     this token needs a `gist` (Create gists) scope
 
+### `Options`
+
+Configuration (`Object`, optional) with the following fields:
+
+###### `options.rehypeStringify`
+
+Options passed to [`rehype-stringify`][rehype-stringify] (`Object`, optional).
+
+###### `options.controlPictures`
+
+Whether to allow [`control-pictures`][control-pictures] in markdown and replace
+them with the control characters they represent before sending it off to GitHub
+(`boolean`, default: `false`).
+
+###### `options.keep`
+
+Parts of the pipeline to keep (`Keep`, optional).
+
+### `Keep`
+
+Keep certain parts of GHs pipeline (`Object`, optional) with the following
+fields:
+
+###### `keep.dir`
+
+Keep `dir="auto"` (`boolean`, default: `false`).
+
+###### `keep.heading`
+
+Keep `.anchor` in headings (`boolean`, default: `false`).
+
+###### `keep.link`
+
+Keep `rel="nofollow"` on links (`boolean`, default: `false`).
+
+###### `keep.camo`
+
+Keep `camo.githubusercontent.com` on images (`boolean`, default: `false`).
+
+###### `keep.image`
+
+Keep `max-width:100%` on images and `a[target=_blank]` parent wrapper
+(`boolean`, default: `false`).
+
+###### `keep.mention`
+
+Keep attributes on `.user-mention`s (`boolean`, default: `false`).
+
+###### `keep.gemoji`
+
+Keep `g-emoji` custom elements (`boolean`, default: `false`).
+
+###### `keep.tasklist`
+
+Keep classes on tasklist-related elements, and `id` on their inputs
+(`boolean`, default: `false`).
+
+###### `keep.frontmatter`
+
+Keep visible frontmatter (`boolean`, default: `false`).
+
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports additional `Options` type that models its respective interface.
+It exports the additional types `Options` and `Keep`.
 
 ## Compatibility
 
 This package is at least compatible with all maintained versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 
 ## Security
 
