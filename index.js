@@ -39,6 +39,7 @@ import path from 'node:path'
 import process from 'node:process'
 import {Octokit} from '@octokit/rest'
 import {controlPictures} from 'control-pictures'
+// To do: use `fsPromises.glob` when Node 22 is minimum.
 import {globby} from 'globby'
 import {headingRank} from 'hast-util-heading-rank'
 import {matches, select, selectAll} from 'hast-util-select'
@@ -263,12 +264,16 @@ export async function createGfmFixtures(url, options = {}) {
   while (++index < commentNodes.length) {
     const body = commentNodes[index]
 
+    const head = body.children.at(0)
+
     // GH renders some stray whitespace in comments.
-    if (whitespace(body.children[0])) {
+    if (head && whitespace(head)) {
       body.children.splice(0, 1)
     }
 
-    if (whitespace(body.children.at(-1))) {
+    const tail = body.children.at(-1)
+
+    if (tail && whitespace(tail)) {
       body.children.splice(-1, 1)
     }
 
@@ -467,7 +472,7 @@ function cleanMarkupImageLink() {
         matches('a[target=_blank]', element) &&
         element.properties &&
         parent &&
-        index !== null &&
+        typeof index === 'number' &&
         element.children.length === 1
         // To do: better test that this includes an image?
       ) {
@@ -512,7 +517,11 @@ function cleanMarkupGemoji() {
       //   fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/21a9.png"
       // >↩</g-emoji>
       // ```
-      if (element.tagName === 'g-emoji' && parent && index !== null) {
+      if (
+        element.tagName === 'g-emoji' &&
+        parent &&
+        typeof index === 'number'
+      ) {
         parent.children.splice(index, 1, ...element.children)
         return index
       }
