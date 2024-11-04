@@ -15,8 +15,6 @@
  *   Keep `max-width:100%` on images and `a[target=_blank]` parent wrapper.
  * @property {boolean} [mention=false]
  *   Keep attributes on `.user-mention`s.
- * @property {boolean} [gemoji=false]
- *   Keep `g-emoji` custom elements.
  * @property {boolean} [tasklist=false]
  *   Keep classes on tasklist-related elements, and `id` on their inputs.
  * @property {boolean} [frontmatter=false]
@@ -81,7 +79,6 @@ export async function createGfmFixtures(url, options = {}) {
   if (!keep.image) cleanMarkdownBody.use(cleanMarkupImageStyle)
   if (!keep.image) cleanMarkdownBody.use(cleanMarkupImageLink)
   if (!keep.mention) cleanMarkdownBody.use(cleanMarkupUserMention)
-  if (!keep.gemoji) cleanMarkdownBody.use(cleanMarkupGemoji)
   cleanMarkdownBody.use(cleanMarkupFootnoteIdHash)
   if (!keep.tasklist) cleanMarkdownBody.use(cleanMarkupTasklist)
   if (!keep.frontmatter) cleanMarkdownBody.use(cleanMarkupFrontmatter)
@@ -501,29 +498,6 @@ function cleanMarkupUserMention() {
       if (matches('a.user-mention', element) && element.properties) {
         const {href} = element.properties
         element.properties = {href}
-      }
-    })
-  }
-}
-
-/** @type {import('unified').Plugin<Array<void>, Root>} */
-function cleanMarkupGemoji() {
-  return (tree) => {
-    visit(tree, 'element', (element, index, parent) => {
-      // ```
-      // <g-emoji
-      //   class="g-emoji"
-      //   alias="leftwards_arrow_with_hook"
-      //   fallback-src="https://github.githubassets.com/images/icons/emoji/unicode/21a9.png"
-      // >↩</g-emoji>
-      // ```
-      if (
-        element.tagName === 'g-emoji' &&
-        parent &&
-        typeof index === 'number'
-      ) {
-        parent.children.splice(index, 1, ...element.children)
-        return index
       }
     })
   }
