@@ -35,7 +35,8 @@
   "files": [
     "index.d.ts.map",
     "index.d.ts",
-    "index.js"
+    "index.js",
+    "lib/"
   ],
   "funding": {
     "type": "github",
