@@ -28,9 +28,9 @@
     "index.js"
   ],
   "dependencies": {
-    "@octokit/rest": "^19.0.0",
+    "@octokit/rest": "^21.0.0",
     "control-pictures": "^2.0.0",
-    "globby": "^13.0.0",
+    "globby": "^14.0.0",
     "hast-util-heading-rank": "^3.0.0",
     "hast-util-select": "^6.0.0",
     "hast-util-to-string": "^3.0.0",

@@ -41,13 +41,7 @@ test('create-gfm-fixtures', async () => {
   )
 
   // Done.
-  console.log(
-    '\nnote: the next warning is expected (remove when node 12 is EOL)'
-  )
-  await fs.rmdir(fixtures, {recursive: true})
-  console.log(
-    'note: the prev warning was expected (remove when node 12 is EOL)\n'
-  )
+  await fs.rm(fixtures, {recursive: true})
 
   // Test: comment only should work
   await fs.mkdir(fixtures, {recursive: true})
@@ -61,7 +55,7 @@ test('create-gfm-fixtures', async () => {
     'should crawl w/ just comments'
   )
 
-  await fs.rmdir(fixtures, {recursive: true})
+  await fs.rm(fixtures, {recursive: true})
 
   // Test: `offline`
   await fs.mkdir(fixtures, {recursive: true})
@@ -82,7 +76,7 @@ test('create-gfm-fixtures', async () => {
     'should not generate fixtures for `offline` files'
   )
 
-  await fs.rmdir(fixtures, {recursive: true})
+  await fs.rm(fixtures, {recursive: true})
 
   // Test: control pictures
   await fs.mkdir(fixtures, {recursive: true})
@@ -96,7 +90,7 @@ test('create-gfm-fixtures', async () => {
     'should crawl w/ `controlPictures`'
   )
 
-  await fs.rmdir(fixtures, {recursive: true})
+  await fs.rm(fixtures, {recursive: true})
 
   // Test: cleaning:
   await fs.mkdir(fixtures, {recursive: true})
@@ -181,5 +175,5 @@ test('create-gfm-fixtures', async () => {
     'should clean frontmatter'
   )
 
-  await fs.rmdir(fixtures, {recursive: true})
+  await fs.rm(fixtures, {recursive: true})
 })
