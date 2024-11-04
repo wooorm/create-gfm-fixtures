@@ -7,19 +7,19 @@ Create GFM fixtures.
 
 ## Contents
 
-*   [What is this?](#what-is-this)
-*   [When should I use this?](#when-should-i-use-this)
-*   [Install](#install)
-*   [Use](#use)
-*   [API](#api)
-    *   [`createGfmFixtures(url[, options])`](#creategfmfixturesurl-options)
-    *   [`Options`](#options)
-    *   [`Keep`](#keep)
-*   [Types](#types)
-*   [Compatibility](#compatibility)
-*   [Security](#security)
-*   [Contribute](#contribute)
-*   [License](#license)
+* [What is this?](#what-is-this)
+* [When should I use this?](#when-should-i-use-this)
+* [Install](#install)
+* [Use](#use)
+* [API](#api)
+  * [`createGfmFixtures(url[, options])`](#creategfmfixturesurl-options)
+  * [`Options`](#options)
+  * [`Keep`](#keep)
+* [Types](#types)
+* [Compatibility](#compatibility)
+* [Security](#security)
+* [Contribute](#contribute)
+* [License](#license)
 
 ## What is this?
 
@@ -95,8 +95,8 @@ them if they’re either a) missing, b) `UPDATE` is set in env.
 
 ###### Parameters
 
-*   `url` (`URL`) — URL to folder containing fixtures
-*   `options` (`Options`) — configuration (optional)
+* `url` (`URL`) — URL to folder containing fixtures
+* `options` (`Options`) — configuration (optional)
 
 ###### Returns
 
@@ -113,9 +113,9 @@ fixture to GitHub and generate HTML for it.
 
 ###### Configuration from env
 
-*   pass `UPDATE=1` (any truthy value will do) to regenerate fixtures
-*   place a `GH_TOKEN` or `GITHUB_TOKEN` in env when generating files,
-    this token needs a `gist` (Create gists) scope
+* pass `UPDATE=1` (any truthy value will do) to regenerate fixtures
+* place a `GH_TOKEN` or `GITHUB_TOKEN` in env when generating files,
+  this token needs a `gist` (Create gists) scope
 
 ### `Options`
 

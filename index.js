@@ -220,13 +220,13 @@ export async function createGfmFixtures(url, options = {}) {
     headers: {Authorization: 'token ' + ghToken}
   })
 
-  const doc = await response.text()
+  const document = await response.text()
 
   // Remove the Gist.
   /* eslint-disable-next-line camelcase */
   await octo.gists.delete({gist_id: id})
 
-  const whole = rehype.parse(doc)
+  const whole = rehype.parse(document)
   const fileNodes = selectAll('.file', whole)
   const commentNodes = selectAll('.comment-body.markdown-body', whole)
   /** @type {Array<string>} */
@@ -268,7 +268,7 @@ export async function createGfmFixtures(url, options = {}) {
       body.children.splice(0, 1)
     }
 
-    if (whitespace(body.children[body.children.length - 1])) {
+    if (whitespace(body.children.at(-1))) {
       body.children.splice(-1, 1)
     }
 
@@ -316,6 +316,7 @@ function cleanMarkupSourcepos() {
 }
 
 /** @type {import('unified').Plugin<Array<void>, Root>} */
+// eslint-disable-next-line unicorn/prevent-abbreviations
 function cleanMarkupDir() {
   return (tree) => {
     visit(tree, 'element', (element) => {
@@ -348,6 +349,7 @@ function cleanMarkupAnchor() {
 }
 
 /** @type {import('unified').Plugin<Array<void>, Root>} */
+// eslint-disable-next-line unicorn/prevent-abbreviations
 function cleanMarkupLinkRel() {
   return (tree) => {
     visit(tree, 'element', (element) => {
