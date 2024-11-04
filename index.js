@@ -330,18 +330,39 @@ function cleanMarkupDir() {
 /** @type {import('unified').Plugin<Array<void>, Root>} */
 function cleanMarkupAnchor() {
   return (tree) => {
-    visit(tree, 'element', (element) => {
-      if (headingRank(element)) {
-        const head = element.children[0]
+    visit(tree, 'element', (element, index, parent) => {
+      if (
+        parent &&
+        typeof index === 'number' &&
+        element.tagName === 'div' &&
+        element.properties &&
+        Array.isArray(element.properties.className) &&
+        element.properties.className.includes('markdown-heading')
+      ) {
+        const first = element.children[0]
+        const second = element.children[1]
 
         if (
-          head &&
-          head.type === 'element' &&
-          head.properties &&
-          Array.isArray(head.properties.className) &&
-          head.properties.className.includes('anchor')
+          headingRank(first) &&
+          first.type === 'element' &&
+          first.properties &&
+          Array.isArray(first.properties.className) &&
+          first.properties.className.includes('heading-element') &&
+          second &&
+          second.type === 'element' &&
+          second.properties &&
+          Array.isArray(second.properties.className) &&
+          second.properties.className.includes('anchor')
         ) {
-          element.children.splice(0, 1)
+          first.properties.className = first.properties.className.filter(
+            (d) => d !== 'heading-element'
+          )
+
+          if (first.properties.className.length === 0) {
+            first.properties.className = undefined
+          }
+
+          parent.children.splice(index, 1, first)
         }
       }
     })
@@ -584,8 +605,8 @@ function cleanMarkupFrontmatter() {
     // ```
     if (
       tree.children.length > 1 &&
-      matches('table', head) &&
-      select('tbody > tr > td > div', head) &&
+      matches('markdown-accessiblity-table', head) &&
+      select('table > tbody > tr > td > div', head) &&
       tree.children[1].type === 'text' &&
       tree.children[1].value === '\n\n'
     ) {
