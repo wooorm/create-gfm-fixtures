@@ -1,32 +1,8 @@
 {
-  "name": "create-gfm-fixtures",
-  "version": "1.1.0",
-  "description": "Create GFM fixtures",
-  "license": "MIT",
-  "keywords": [
-    "gfm",
-    "github",
-    "comment",
-    "gist",
-    "markdown"
-  ],
-  "repository": "wooorm/create-gfm-fixtures",
-  "bugs": "https://github.com/wooorm/create-gfm-fixtures/issues",
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/wooorm"
-  },
   "author": "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)",
+  "bugs": "https://github.com/wooorm/create-gfm-fixtures/issues",
   "contributors": [
     "Titus Wormer <tituswormer@gmail.com> (https://wooorm.com)"
-  ],
-  "sideEffects": false,
-  "type": "module",
-  "main": "index.js",
-  "files": [
-    "index.d.ts.map",
-    "index.d.ts",
-    "index.js"
   ],
   "dependencies": {
     "@octokit/rest": "^21.0.0",
@@ -43,6 +19,7 @@
     "unified": "^11.0.0",
     "unist-util-visit": "^5.0.0"
   },
+  "description": "Create GFM fixtures",
   "devDependencies": {
     "@types/hast": "^3.0.0",
     "@types/node": "^22.0.0",
@@ -55,37 +32,58 @@
     "typescript": "^5.0.0",
     "xo": "^0.59.0"
   },
-  "scripts": {
-    "prepack": "npm run build && npm run format",
-    "build": "tsc --build --clean && tsc --build && type-coverage",
-    "format": "remark . -qfo && prettier . -w --log-level warn && xo --fix",
-    "test-api": "node --conditions development test/index.js",
-    "test-coverage": "c8 --check-coverage --100 --reporter lcov npm run test-api",
-    "test": "npm run build && npm run format && npm run test-coverage"
+  "files": [
+    "index.d.ts.map",
+    "index.d.ts",
+    "index.js"
+  ],
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/wooorm"
   },
+  "keywords": [
+    "comment",
+    "gfm",
+    "gist",
+    "github",
+    "markdown"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "create-gfm-fixtures",
   "prettier": {
-    "tabWidth": 2,
-    "useTabs": false,
-    "singleQuote": true,
     "bracketSpacing": false,
     "semi": false,
-    "trailingComma": "none"
-  },
-  "xo": {
-    "prettier": true,
-    "rules": {
-      "no-await-in-loop": "off"
-    }
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none",
+    "useTabs": false
   },
   "remarkConfig": {
     "plugins": [
-      "preset-wooorm"
+      "remark-preset-wooorm"
     ]
   },
+  "repository": "wooorm/create-gfm-fixtures",
+  "scripts": {
+    "build": "tsc --build --clean && tsc --build && type-coverage",
+    "format": "remark --frail --quiet --output -- . && prettier --log-level warn --write -- . && xo --fix",
+    "test-api": "node --conditions development test/index.js",
+    "test-coverage": "c8 --100 --reporter lcov -- npm run test-api",
+    "test": "npm run build && npm run format && npm run test-coverage"
+  },
+  "sideEffects": false,
   "typeCoverage": {
     "atLeast": 100,
-    "detail": true,
-    "strict": true,
-    "ignoreCatch": true
+    "strict": true
+  },
+  "type": "module",
+  "version": "1.1.0",
+  "xo": {
+    "prettier": true,
+    "rules": {
+      "complexity": "off",
+      "no-await-in-loop": "off"
+    }
   }
 }

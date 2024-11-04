@@ -61,7 +61,6 @@ const own = {}.hasOwnProperty
  * @param {Options} [options={}]
  *   Configuration (optional).
  */
-// eslint-disable-next-line complexity
 export async function createGfmFixtures(url, options = {}) {
   const keep = options.keep || {}
   const rehype = unified().use(rehypeParse).use(rehypeStringify)
