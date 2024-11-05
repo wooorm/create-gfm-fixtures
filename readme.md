@@ -121,9 +121,10 @@ fixture to GitHub and generate HTML for it.
 
 Configuration (`Object`, optional) with the following fields:
 
-###### `options.rehypeStringify`
+###### `options.toHtml`
 
-Options passed to [`rehype-stringify`][rehype-stringify] (`Object`, optional).
+Options passed to [`hast-util-to-html`][hast-util-to-html-options]
+(`Object`, optional).
 
 ###### `options.controlPictures`
 
@@ -227,6 +228,6 @@ See [How to Contribute to Open Source][contribute].
 
 [writing on github]: https://docs.github.com/en/github/writing-on-github
 
-[rehype-stringify]: https://github.com/rehypejs/rehype/tree/main/packages/rehype-stringify
+[hast-util-to-html-options]: https://github.com/syntax-tree/hast-util-to-html#options
 
 [control-pictures]: https://github.com/wooorm/control-pictures
