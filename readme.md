@@ -68,7 +68,7 @@ import fs from 'node:fs/promises'
 import test from 'node:test'
 import {createGfmFixtures} from 'create-gfm-fixtures'
 
-test('fixtures', async () => {
+test('fixtures', async function () {
   const fixtures = new URL('url/to/fixtures/')
   const input = await fs.readFile(new URL('example.md', fixtures))
   // ^-- This is our input to some process.
@@ -100,7 +100,7 @@ them if they’re either a) missing, b) `UPDATE` is set in env.
 
 ###### Returns
 
-Promise that resolves when done (`Promise<void>`).
+Promise that resolves when done (`Promise<undefined>`).
 
 ###### Configuration from files
 
