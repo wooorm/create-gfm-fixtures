@@ -32,6 +32,7 @@
     "typescript": "^5.0.0",
     "xo": "^0.59.0"
   },
+  "exports": "./index.js",
   "files": [
     "index.d.ts.map",
     "index.d.ts",
@@ -50,7 +51,6 @@
     "markdown"
   ],
   "license": "MIT",
-  "main": "index.js",
   "name": "create-gfm-fixtures",
   "prettier": {
     "bracketSpacing": false,

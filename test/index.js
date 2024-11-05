@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs/promises'
 import {scheduler} from 'node:timers/promises'
 import test from 'node:test'
-import {createGfmFixtures} from '../index.js'
+import {createGfmFixtures} from 'create-gfm-fixtures'
 
 test('create-gfm-fixtures', async function (t) {
   const fixtures = new URL('fixtures/', import.meta.url)
 
   await t.test('should expose the public api', async function () {
-    assert.deepEqual(Object.keys(await import('../index.js')).sort(), [
+    assert.deepEqual(Object.keys(await import('create-gfm-fixtures')).sort(), [
       'createGfmFixtures'
     ])
   })
