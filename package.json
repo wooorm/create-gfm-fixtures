@@ -78,7 +78,7 @@
     "strict": true
   },
   "type": "module",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "xo": {
     "prettier": true,
     "rules": {
