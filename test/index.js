@@ -25,7 +25,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('example.html', fixtures))),
+      await fs.readFile(new URL('example.html', fixtures), 'utf8'),
       '<p>a\nb</p>\n'
     )
 
@@ -38,7 +38,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('example.comment.html', fixtures))),
+      await fs.readFile(new URL('example.comment.html', fixtures), 'utf8'),
       '<p>a<br>\nb</p>\n'
     )
 
@@ -88,7 +88,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures, {controlPictures: true})
 
     assert.equal(
-      String(await fs.readFile(new URL('control.html', fixtures))),
+      await fs.readFile(new URL('control.html', fixtures), 'utf8'),
       '<p>a<br>\nb</p>\n'
     )
 
@@ -101,7 +101,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('dir.html', fixtures))),
+      await fs.readFile(new URL('dir.html', fixtures), 'utf8'),
       '<p>a</p>\n'
     )
 
@@ -115,13 +115,13 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('mention.file.html', fixtures))),
+      await fs.readFile(new URL('mention.file.html', fixtures), 'utf8'),
       '<p>@wooorm</p>\n',
       'should not support mentions in files'
     )
 
     assert.equal(
-      String(await fs.readFile(new URL('mention.comment.html', fixtures))),
+      await fs.readFile(new URL('mention.comment.html', fixtures), 'utf8'),
       '<p><a href="https://github.com/wooorm">@wooorm</a></p>\n',
       'should support mentions in comments'
     )
@@ -135,7 +135,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('heading-anchor.html', fixtures))),
+      await fs.readFile(new URL('heading-anchor.html', fixtures), 'utf8'),
       '<h1>hi</h1>\n'
     )
 
@@ -148,7 +148,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('footnote.html', fixtures))),
+      await fs.readFile(new URL('footnote.html', fixtures), 'utf8'),
       '<p><sup><a href="#user-content-fn-a" id="user-content-fnref-a" data-footnote-ref="" aria-describedby="footnote-label">1</a></sup></p>\n<section data-footnotes="" class="footnotes"><h2 id="footnote-label" class="sr-only">Footnotes</h2>\n<ol>\n<li id="user-content-fn-a">\n<p>b <a href="#user-content-fnref-a" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>\n</li>\n</ol>\n</section>\n'
     )
 
@@ -164,7 +164,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('link.html', fixtures))),
+      await fs.readFile(new URL('link.html', fixtures), 'utf8'),
       '<p><a href="https://bravo.com">alpha</a>, <a href="/delta">charlie</a>, <a href="./foxtrot">echo</a>, <a href="?hotel">golf</a>, <a href="#juliett">india</a>.</p>\n'
     )
 
@@ -180,7 +180,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('image.html', fixtures))),
+      await fs.readFile(new URL('image.html', fixtures), 'utf8'),
       '<p><img src="https://bravo.com" alt="alpha">, <img src="/delta" alt="charlie">, <img src="./foxtrot" alt="echo">, <img src="" alt="golf">, <img src="juliett?kilo" alt="india">, <img src="" alt="lima">, <img src="papa#qu%C3%A9bec" alt="oscar">, <a href="uniform"><img src="tango" alt="sierra"></a>.</p>\n'
     )
 
@@ -193,7 +193,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('tasklist.html', fixtures))),
+      await fs.readFile(new URL('tasklist.html', fixtures), 'utf8'),
       '<ul>\n<li><input type="checkbox" disabled checked> a</li>\n</ul>\n'
     )
 
@@ -209,7 +209,7 @@ test('create-gfm-fixtures', async function (t) {
     await createGfmFixtures(fixtures)
 
     assert.equal(
-      String(await fs.readFile(new URL('frontmatter.html', fixtures))),
+      await fs.readFile(new URL('frontmatter.html', fixtures), 'utf8'),
       '<h1>c</h1>\n'
     )
 
