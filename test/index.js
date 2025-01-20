@@ -215,4 +215,17 @@ test('create-gfm-fixtures', async function (t) {
 
     await fs.rm(fixtures, {recursive: true})
   })
+
+  await t.test('should clean tables', async function () {
+    await fs.mkdir(fixtures, {recursive: true})
+    await fs.writeFile(new URL('table.md', fixtures), '| a |\n| -\n| c | d |')
+    await createGfmFixtures(fixtures)
+
+    assert.equal(
+      await fs.readFile(new URL('table.html', fixtures), 'utf8'),
+      '<table>\n<thead>\n<tr>\n<th>a</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>c</td>\n</tr>\n</tbody>\n</table>\n'
+    )
+
+    await fs.rm(fixtures, {recursive: true})
+  })
 })

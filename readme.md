@@ -166,6 +166,11 @@ Keep `max-width:100%` on images and `a[target=_blank]` parent wrapper
 
 Keep attributes on `.user-mention`s (`boolean`, default: `false`).
 
+###### `keep.table`
+
+Keep the `markdown-accessiblity-table` custom element around tables
+(`boolean`, default: `false`).
+
 ###### `keep.tasklist`
 
 Keep classes on tasklist-related elements, and `id` on their inputs
