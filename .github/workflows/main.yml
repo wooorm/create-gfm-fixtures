@@ -11,7 +11,7 @@ jobs:
       - env:
           GH_TOKEN: ${{secrets.GH_TOKEN}}
         run: npm test
-      - uses: codecov/codecov-action@v4
+      - uses: codecov/codecov-action@v5
     strategy:
       matrix:
         node:
