@@ -162,6 +162,10 @@ Keep `camo.githubusercontent.com` on images (`boolean`, default: `false`).
 Keep `max-width:100%` on images and `a[target=_blank]` parent wrapper
 (`boolean`, default: `false`).
 
+###### `keep.issue`
+
+Keep `.issue-link`s (`boolean`, default: `false`).
+
 ###### `keep.mention`
 
 Keep attributes on `.user-mention`s (`boolean`, default: `false`).

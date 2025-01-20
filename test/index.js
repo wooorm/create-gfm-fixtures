@@ -129,6 +129,23 @@ test('create-gfm-fixtures', async function (t) {
     await fs.rm(fixtures, {recursive: true})
   })
 
+  await t.test('should clean issue references', async function () {
+    // Note: `#1` on `linked-list` is actually a pull request.
+    await fs.mkdir(fixtures, {recursive: true})
+    await fs.writeFile(
+      new URL('issue.md', fixtures),
+      'Reference: wooorm/linked-list#1\n\nLink to [pull](https://github.com/wooorm/linked-list/pull/1)\n\nLink to [issue](https://github.com/wooorm/linked-list/issues/7)'
+    )
+    await createGfmFixtures(fixtures)
+
+    assert.equal(
+      await fs.readFile(new URL('issue.html', fixtures), 'utf8'),
+      '<p>Reference: wooorm/linked-list#1</p>\n<p>Link to <a href="https://github.com/wooorm/linked-list/pull/1">pull</a></p>\n<p>Link to <a href="https://github.com/wooorm/linked-list/issues/7">issue</a></p>\n'
+    )
+
+    await fs.rm(fixtures, {recursive: true})
+  })
+
   await t.test('should clean headings and their anchors', async function () {
     await fs.mkdir(fixtures, {recursive: true})
     await fs.writeFile(new URL('heading-anchor.md', fixtures), '# hi')
