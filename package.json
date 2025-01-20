@@ -15,7 +15,7 @@
     "hast-util-to-string": "^3.0.0",
     "hast-util-whitespace": "^3.0.0",
     "replace-ext": "^2.0.0",
-    "undici": "^6.0.0",
+    "undici": "^7.0.0",
     "unist-util-visit": "^5.0.0"
   },
   "description": "Create GFM fixtures",
